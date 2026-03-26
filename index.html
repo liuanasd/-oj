@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在线OJ系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .editor-container {
+            margin-bottom: 20px;
+        }
+        
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .editor-header h2 {
+            font-size: 16px;
+            color: #555;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 300px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+        }
+        
+        .button-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .result-container {
+            margin-top: 30px;
+        }
+        
+        .result-container h2 {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        
+        .result-box {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            min-height: 100px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+        }
+        
+        .status {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .status.success {
+            color: #4CAF50;
+        }
+        
+        .status.error {
+            color: #f44336;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>在线OJ系统</h1>
+        
+        <div class="editor-container">
+            <div class="editor-header">
+                <h2>代码编辑器</h2>
+                <div>
+                    <label for="language">语言：</label>
+                    <select id="language">
+                        <option value="cpp">C++</option>
+                    </select>
+                </div>
+            </div>
+            <textarea id="code" placeholder="请输入C++代码...">class Solution {
+public:
+    bool isPalindrome(int x) {
+        if (x < 0) return false;
+        int reverse = 0, original = x;
+        while (x > 0) {
+            reverse = reverse * 10 + x % 10;
+            x /= 10;
+        }
+        return reverse == original;
+    }
+};</textarea>
+        </div>
+        
+        <div class="editor-container">
+            <div class="editor-header">
+                <h2>输入数据</h2>
+            </div>
+            <textarea id="input" placeholder="请输入程序输入数据..."></textarea>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit">提交代码</button>
+        </div>
+        
+        <div class="result-container">
+            <h2>运行结果</h2>
+            <div id="result" class="result-box">
+                <div class="loading">等待提交...</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('submit').addEventListener('click', function() {
+            const code = document.getElementById('code').value;
+            const input = document.getElementById('input').value;
+            const resultDiv = document.getElementById('result');
+            
+            // 显示加载状态
+            resultDiv.innerHTML = '<div class="loading">正在编译运行...</div>';
+            
+            // 构建请求数据
+            const data = {
+                code: code,
+                input: input,
+                cpu: 1,
+                mem: 128
+            };
+            
+            // 发送POST请求
+            fetch('http://localhost:8080/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 显示结果
+                let statusClass = data.status === 0 ? 'success' : 'error';
+                let statusText = data.status === 0 ? '运行成功' : '运行失败';
+                
+                resultDiv.innerHTML = `
+                    <div class="status ${statusClass}">${statusText}: ${data.reason}</div>
+                    <div><strong>输出：</strong>${data.output || '无'}</div>
+                    <div><strong>错误：</strong>${data.error || '无'}</div>
+                `;
+            })
+            .catch(error => {
+                resultDiv.innerHTML = `
+                    <div class="status error">请求失败</div>
+                    <div>错误信息：${error.message}</div>
+                `;
+            });
+        });
+    </script>
+</body>
+</html>
