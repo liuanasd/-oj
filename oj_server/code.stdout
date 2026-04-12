@@ -1,0 +1,5 @@
+Test 1: 121 is palindrome
+Test 2: -121 is not palindrome
+Test 3: 10 is not palindrome
+Test 4: 0 is palindrome
+Test 5: 12321 is palindrome

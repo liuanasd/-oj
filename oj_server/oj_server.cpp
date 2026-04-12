@@ -4,21 +4,47 @@
 #include "../compile_run.hpp"
 using namespace ns_control;
 using namespace httplib;
+
+
+std::string escape_json(const std::string &s) {
+    std::string res;
+    for (char c : s) {
+        switch (c) {
+            case '"': res += "\\\"";
+ break;
+            case '\\': res += "\\\\";
+ break;
+            case '\b': res += "\\b";
+ break;
+            case '\f': res += "\\f";
+ break;
+            case '\n': res += "\\n";
+ break;
+            case '\r': res += "\\r";
+ break;
+            case '\t': res += "\\t";
+ break;
+            default: res += c;
+ break;
+        }
+    }
+    return res;
+}
 int main(){
     Server svr;
     Control ctrl;
     
-    // 题目列表路由
+    
     svr.Get("/", [&ctrl](const Request& req, Response& res){
         std::string html;
         ctrl.AllQuestions(&html);
         res.set_content(html, "text/html;charset=utf-8");
     });
     
-    // 设置静态文件服务
+    
     svr.set_mount_point("/static", "../");
     
-    // 单个题目路由
+    
     svr.Get("/question/([0-9]+)", [&ctrl](const Request& req, Response& res){
        std::string number=req.matches[1];
        std::string html;
@@ -26,7 +52,7 @@ int main(){
         res.set_content(html, "text/html;charset=utf-8");
     });
     
-    // 判题路由 - GET请求用于显示提交页面
+    
     svr.Get("/judge/([0-9]+)", [&ctrl](const Request& req, Response& res){
         std::string number=req.matches[1];
         ns_model::Question q;
@@ -76,7 +102,7 @@ int main(){
         }
     });
     
-    // 判题路由 - POST请求用于处理代码提交
+    
     svr.Post("/judge/([0-9]+)", [](const Request& req, Response& res){
         std::string number=req.matches[1];
         std::string code = req.get_param_value("code");
@@ -86,32 +112,53 @@ int main(){
             return;
         }
         
-        // 构建完整的代码，包含题目对应的tail.cpp
-        std::string full_code = "#define COMPILER_ONLINE\n";
-        full_code += code + "\n";
         
-        // 读取对应的tail.cpp文件
+        std::string full_code = code;
+        
+        
+        size_t main_start = full_code.find("int main()");
+        if (main_start != std::string::npos) {
+            
+            size_t main_end = full_code.find("return 0;", main_start);
+            if (main_end != std::string::npos) {
+                
+                size_t brace_end = full_code.find("}", main_end);
+                if (brace_end != std::string::npos) {
+                    
+                    full_code.erase(main_start, brace_end - main_start + 1);
+                }
+            }
+        }
+        
+        
         std::string tail_path = "./questions/" + number + ".tail.cpp";
         std::ifstream tail_file(tail_path);
         if(tail_file){
             std::string tail_content((std::istreambuf_iterator<char>(tail_file)), std::istreambuf_iterator<char>());
-            full_code += tail_content;
+            
+            std::string include_str = "#include \"" + number + ".header.cpp\"";
+            std::string replace_str = "#include \"./questions/" + number + ".header.cpp\"";
+            size_t include_pos = tail_content.find(include_str);
+            if (include_pos != std::string::npos) {
+                tail_content.replace(include_pos, include_str.size(), replace_str);
+            }
+            full_code += "\n" + tail_content;
             tail_file.close();
         } else {
             res.set_content("无法读取测试文件", "text/plain;charset=utf-8");
             return;
         }
         
-        // 使用CompileRun::Stat函数处理代码编译和运行
-        std::string in_json = "{\"code\":\"" + full_code + "\",\"input\":\"\",\"cpu\":1,\"mem\":128}";
+        
+        std::string in_json = "{\"code\":\"" + escape_json(full_code) + "\",\"input\":\"\",\"cpu\":1,\"mem\":128}";
         std::string out_json;
         ns_compile_run::CompileRun::Stat(in_json, out_json);
         
-        // 解析输出JSON
+        
         int status = 0;
         std::string reason, output, error;
         
-        // 简单解析JSON
+        
         size_t status_start = out_json.find("\"status\":");
         if(status_start != std::string::npos){
             status_start += 9;
@@ -150,7 +197,7 @@ int main(){
             }
         }
         
-        // 生成结果页面
+        
         std::string html;
         html = "<html>";
         html += "<head>";
@@ -209,8 +256,8 @@ int main(){
         res.set_content(html, "text/html;charset=utf-8");
     });
     
-    // 启动服务器
-    std::cout << "Server running on http://0.0.0.0:8080" << std::endl;
+    
+    std::cout << "Server running on http:
     svr.listen("0.0.0.0", 8080);
     return 0;
 }

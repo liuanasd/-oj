@@ -1,0 +1,39 @@
+<html><head><title>回文数</title><style>body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }.container { max-width: 1000px; margin: 0 auto; background-color: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 30px; }h1 { color: #1a1a1a; margin-bottom: 20px; font-size: 24px; }.question-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid #e1e1e1; }.question-info { display: flex; align-items: center; }.number { font-weight: bold; color: #007bff; margin-right: 15px; font-size: 16px; }.difficulty { display: inline-block; padding: 4px 16px; border-radius: 12px; font-size: 14px; font-weight: 500; }.difficulty.easy { background-color: #d4edda; color: #155724; }.difficulty.medium { background-color: #fff3cd; color: #856404; }.difficulty.hard { background-color: #f8d7da; color: #721c24; }.info { margin: 20px 0; padding: 15px; background-color: #f8f9fa; border-radius: 6px; font-size: 14px; }.info p { margin: 5px 0; }.desc { margin: 20px 0; padding: 20px; border: 1px solid #e1e1e1; border-radius: 6px; line-height: 1.6; }.desc h3 { margin-top: 0; color: #333; }.desc pre { background-color: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto; }.code { margin: 20px 0; padding: 20px; background-color: #f8f9fa; border: 1px solid #e1e1e1; border-radius: 6px; }.code h3 { margin-top: 0; color: #333; }.code pre { background-color: #2d2d2d; color: #f8f8f2; padding: 15px; border-radius: 4px; overflow-x: auto; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 14px; }.actions { margin-top: 30px; display: flex; justify-content: space-between; }.btn { display: inline-block; padding: 10px 20px; border-radius: 4px; text-decoration: none; font-weight: 500; transition: all 0.3s ease; }.btn-primary { background-color: #007bff; color: white; }.btn-primary:hover { background-color: #0069d9; }.btn-secondary { background-color: #6c757d; color: white; }.btn-secondary:hover { background-color: #5a6268; }</style></head><body><div class='container'><div class='question-header'><div class='question-info'><div class='number'>1</div><h1>回文数</h1></div><div class='difficulty easy'>简单</div></div><div class='info'><p><strong>CPU限制:</strong> 1秒</p><p><strong>内存限制:</strong> 128MB</p></div><div class='desc'>## 回文数
+
+### 题目描述
+判断一个整数是否是回文数。回文数是指正序（从左向右）和倒序（从右向左）读都是一样的整数。
+
+### 示例 1：
+输入：121
+输出：true
+
+### 示例 2：
+输入：-121
+输出：false
+解释：从左向右读, 为 -121 。 从右向左读, 为 121- 。因此它不是一个回文数。
+
+### 示例 3：
+输入：10
+输出：false
+解释：从右向左读, 为 01 。因此它不是一个回文数。
+
+### 进阶：
+你能不将整数转为字符串来解决这个问题吗？</div><div class='code'><h3>代码模板</h3><pre>#include <iostream>
+class Solution {
+public:
+    bool isPalindrome(int x) {
+        // 负数一定不是回文数
+        if (x < 0) return false;
+        
+        int original = x;
+        long long reversed = 0;
+        
+        while (x > 0) {
+            int digit = x % 10;
+            reversed = reversed * 10 + digit;
+            x /= 10;
+        }
+        
+        return original == reversed;
+    }
+};</pre></div><div class='actions'><a href='/' class='btn btn-secondary'>返回题目列表</a><a href='/judge/1' class='btn btn-primary'>提交解答</a></div></div></body></html>

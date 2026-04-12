@@ -8,7 +8,7 @@ namespace ns_view{
             View() {}
             ~View() {}
             
-            // 生成题目列表HTML
+            
             void AllExpandHtml(std::vector<Question> questions, std::string *html){
                 if (!html) return;
                 
@@ -62,7 +62,7 @@ namespace ns_view{
                 *html += "</html>";
             }
             
-            // 生成单个题目HTML
+            
             void OneExpandHtml(const struct Question q, std::string *html){
                 if (!html) return;
                 

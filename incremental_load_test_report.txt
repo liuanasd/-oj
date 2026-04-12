@@ -1,0 +1,17 @@
+Test start time: Thu Apr  2 02:11:40 PM CST 2026
+Test URL: http://localhost:8080/
+
+=====================================
+Concurrency\tTotal Time(s)\tSuccess\tFailed\tError Rate(%)\tAvg Response Time(s)\tQPS
+=====================================
+10\t1\t500\t0\t0\t.001\t500.00
+60\t1\t500\t0\t0\t.006\t500.00
+110\t2\t500\t0\t0\t.010\t250.00
+160\t2\t500\t0\t0\t.013\t250.00
+210\t1\t500\t0\t0\t.007\t500.00
+260\t2\t500\t0\t0\t.009\t250.00
+310\t2\t500\t0\t0\t.024\t250.00
+360\t2\t500\t0\t0\t.014\t250.00
+410\t1\t500\t0\t0\t.015\t500.00
+460\t1\t500\t0\t0\t.009\t500.00
+Test end time: Thu Apr  2 02:12:49 PM CST 2026

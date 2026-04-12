@@ -8,7 +8,7 @@ public:
             int digit = x % 10;
             x /= 10;
             
-            // 检查是否会溢出
+            
             if (result > INT_MAX / 10 || (result == INT_MAX / 10 && digit > 7)) {
                 return 0;
             }

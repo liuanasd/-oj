@@ -24,7 +24,7 @@ void Test4() {
 }
 
 void Test5() {
-    int result = Solution().reverse(1534236469); // 测试溢出
+    int result = Solution().reverse(1534236469); 
     std::cout << "Test 5: reverse(1534236469) = " << result << std::endl;
 }
 

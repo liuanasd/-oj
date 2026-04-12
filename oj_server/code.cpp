@@ -1,36 +1,38 @@
+
 #define COMPILER_ONLINE
+#include "./questions/1.header.cpp"
 #include <iostream>
-#include <string>
-#include <unordered_map>
-class Solution {
-public:
-    int romanToInt(std::string s) {
-        std::unordered_map<char, int> romanMap = {
-            {'I', 1},
-            {'V', 5},
-            {'X', 10},
-            {'L', 50},
-            {'C', 100},
-            {'D', 500},
-            {'M', 1000}
-        };
-        
-        int result = 0;
-        int n = s.length();
-        
-        for (int i = 0; i < n; i++) {
-            int current = romanMap[s[i]];
-            
-            // 如果当前字符的值小于下一个字符的值，则减去当前值
-            if (i < n - 1 && current < romanMap[s[i + 1]]) {
-                result -= current;
-            } else {
-                result += current;
-            }
-        }
-        
-        return result;
-    }
-};
-#define COMPILER_ONLINE
-#include 
+
+void Test1() {
+    bool ret = Solution().isPalindrome(121);
+    std::cout << "Test 1: 121 is " << (ret ? "palindrome" : "not palindrome") << std::endl;
+}
+
+void Test2() {
+    bool ret = Solution().isPalindrome(-121);
+    std::cout << "Test 2: -121 is " << (ret ? "palindrome" : "not palindrome") << std::endl;
+}
+
+void Test3() {
+    bool ret = Solution().isPalindrome(10);
+    std::cout << "Test 3: 10 is " << (ret ? "palindrome" : "not palindrome") << std::endl;
+}
+
+void Test4() {
+    bool ret = Solution().isPalindrome(0);
+    std::cout << "Test 4: 0 is " << (ret ? "palindrome" : "not palindrome") << std::endl;
+}
+
+void Test5() {
+    bool ret = Solution().isPalindrome(12321);
+    std::cout << "Test 5: 12321 is " << (ret ? "palindrome" : "not palindrome") << std::endl;
+}
+
+int main() {
+    Test1();
+    Test2();
+    Test3();
+    Test4();
+    Test5();
+    return 0;
+}

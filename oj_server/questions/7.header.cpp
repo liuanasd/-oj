@@ -1,5 +1,5 @@
 #include <iostream>
-// 链表节点定义
+
 struct ListNode {
     int val;
     ListNode *next;
@@ -11,11 +11,11 @@ struct ListNode {
 class Solution {
 public:
     ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
-        // 创建哑节点作为新链表的头节点
+        
         ListNode dummy(0);
         ListNode* current = &dummy;
         
-        // 遍历两个链表，比较节点值
+        
         while (l1 && l2) {
             if (l1->val <= l2->val) {
                 current->next = l1;
@@ -27,7 +27,7 @@ public:
             current = current->next;
         }
         
-        // 处理剩余节点
+        
         if (l1) {
             current->next = l1;
         } else {

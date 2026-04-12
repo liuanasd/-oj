@@ -2,7 +2,7 @@
 class Solution {
 public:
     bool isPalindrome(int x) {
-        // 负数一定不是回文数
+        
         if (x < 0) return false;
         
         int original = x;

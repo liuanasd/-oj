@@ -20,10 +20,10 @@ namespace ns_log {
      * @details 定义不同级别的日志
      */
     enum {
-        INFO,    ///< 信息级别日志
-        DEBUG,   ///< 调试级别日志
-        ERROR,   ///< 错误级别日志
-        FATAL    ///< 致命错误级别日志
+        INFO,    
+        DEBUG,   
+        ERROR,   
+        FATAL    
     };
 
     /**
@@ -37,11 +37,11 @@ namespace ns_log {
     inline std::ostream& LOG(const std::string &level, const std::string &file_name, int line) {
         std::string message;
         time_t t = time(nullptr);
-        message += "[" + level + "] "; // 添加日志等级
-        message += file_name + " "; // 添加错误文件
-        message += std::to_string(line) + " "; // 添加报错行数
-        message += std::to_string(t); // 获取时间戳
-        std::cout << message << " "; // cout包含缓冲区
+        message += "[" + level + "] "; 
+        message += file_name + " "; 
+        message += std::to_string(line) + " "; 
+        message += std::to_string(t); 
+        std::cout << message << " "; 
         return std::cout;
     }
 

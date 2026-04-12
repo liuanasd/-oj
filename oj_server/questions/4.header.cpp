@@ -20,7 +20,7 @@ public:
         for (int i = 0; i < n; i++) {
             int current = romanMap[s[i]];
             
-            // 如果当前字符的值小于下一个字符的值，则减去当前值
+            
             if (i < n - 1 && current < romanMap[s[i + 1]]) {
                 result -= current;
             } else {

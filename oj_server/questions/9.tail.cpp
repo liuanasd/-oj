@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 
-// 打印数组
+
 void printVector(std::vector<int>& nums, int length) {
     std::cout << "[";
     for (int i = 0; i < length; i++) {
