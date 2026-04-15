@@ -1,134 +1,88 @@
 #pragma once
-#include "../modou.hpp"
+
 #include "../compiler.hpp"
+#include "../modou.hpp"
+#include <algorithm>
 
+namespace ns_model {
+using namespace ns_util;
 
-namespace ns_model{
-    using namespace ns_util;
-    
-    
-    struct Question{
-        std::string number;     
-        std::string title;      
-        std::string star;       
-        int cpu_limit;          
-        int mem_limit;          
-        std::string desc;       
-        std::string header;     
-        std::string tail;       
-    };
-    
-    
-    
-    const std::string question_list = "./question";
-    
-    
-    
-    const std::string question_path = "./questions/";
-    
-    
-    class Model{
-    private:
-        
-        std::unordered_map<std::string, Question> questions;
-        
-    public:
-        
-        Model(){
-            
-            LoadQuestionlist(question_list);
+struct Question {
+    std::string number;
+    std::string title;
+    std::string star;
+    int cpu_limit;
+    int mem_limit;
+    std::string desc;
+    std::string header;
+    std::string tail;
+};
+
+const std::string question_list = "./question";
+const std::string question_path = "./questions/";
+
+class Model {
+private:
+    std::unordered_map<std::string, Question> questions;
+
+public:
+    Model() {
+        LoadQuestionlist(question_list);
+    }
+
+    bool LoadQuestionlist(const std::string &list_path) {
+        std::ifstream ifs(list_path.c_str());
+        if (!ifs) {
+            return false;
         }
-        
-        
-        ~Model(){}
-        
-        
-        
-        
-        bool LoadQuestionlist(const std::string &question_list){
-            
-            std::ifstream ifs(question_list);
-            if(!ifs){
-                
-                return false;
+
+        std::string line;
+        while (getline(ifs, line)) {
+            std::vector<std::string> tokens;
+            StringUtil::SplitString(line, tokens, " ");
+            if (tokens.size() != 5) {
+                continue;
             }
-            
-            std::string line;
-            
-            while(getline(ifs, line)){
-                std::vector<std::string> tonkens;
-                
-                StringUtil::SplitString(line, tonkens, " ");
-                
-                
-                if(tonkens.size() != 5){
-                    
-                    continue;
-                }
-                
-                
-                Question q;
-                q.number = tonkens[0];      
-                q.title = tonkens[1];       
-                q.star = tonkens[2];        
-                q.cpu_limit = stoi(tonkens[3]);  
-                q.mem_limit = stoi(tonkens[4]);  
-                
-                
-                std::string desc_path = question_path + q.number + ".desc";
-                std::string header_path = question_path + q.number + ".header.cpp";
-                std::string tail_path = question_path + q.number + ".tail.cpp";
-                
-                
-                q.desc = FileUtil::ReadFile(desc_path);
-                q.header = FileUtil::ReadFile(header_path);
-                q.tail = FileUtil::ReadFile(tail_path);
-                
-                
-                questions[q.number] = q;
-            }
-            
-            
-            ifs.close();
-            return true;
+
+            Question q;
+            q.number = tokens[0];
+            q.title = tokens[1];
+            q.star = tokens[2];
+            q.cpu_limit = std::atoi(tokens[3].c_str());
+            q.mem_limit = std::atoi(tokens[4].c_str());
+
+            q.desc = FileUtil::ReadFile(question_path + q.number + ".desc");
+            q.header = FileUtil::ReadFile(question_path + q.number + ".header.cpp");
+            q.tail = FileUtil::ReadFile(question_path + q.number + ".tail.cpp");
+
+            questions[q.number] = q;
         }
-        
-        
-        
-        
-        bool LoadQuestion(const std::string &number){
-            return true;
+
+        ifs.close();
+        return true;
+    }
+
+    bool GetAllQuestions(std::vector<Question> &out) {
+        out.clear();
+        for (std::unordered_map<std::string, Question>::iterator it = questions.begin(); it != questions.end(); ++it) {
+            out.push_back(it->second);
         }
-        
-        
-        
-        
-        bool GetAllQuestions(std::vector<Question> &questions){
-            
-            questions.clear();
-            
-            
-            for(auto& qque : this->questions){
-                questions.push_back(qque.second);
-            }
-            return true;
+
+        std::sort(out.begin(), out.end(), [](const Question &left, const Question &right) {
+            return std::atoi(left.number.c_str()) < std::atoi(right.number.c_str());
+        });
+
+        return true;
+    }
+
+    bool GetOneQuestion(const std::string &number, Question &q) {
+        std::unordered_map<std::string, Question>::iterator it = questions.find(number);
+        if (it == questions.end()) {
+            return false;
         }
-        
-        
-        
-        
-        
-        bool GetOneQuestion(const std::string &number, Question &q){
-            
-            const auto& que = questions.find(number);
-            if(que == questions.end()){
-                
-                return false;
-            }
-            
-            
-            q = que->second;
-            return true;
-        }
-    };
+
+        q = it->second;
+        return true;
+    }
+};
 }

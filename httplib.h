@@ -12835,7 +12835,7 @@ inline bool ClientImpl::handle_request(Stream &strm, Request &req,
 
   if (!is_ssl() && !proxy_host_.empty() && proxy_port_ != -1) {
     auto req2 = req;
-    req2.path = "http:
+    req2.path = "http://" +
                 detail::make_host_and_port_string(host_, port_, false) +
                 req.path;
     ret = process_request(strm, req2, res, close_connection, error);
@@ -12911,7 +12911,7 @@ inline bool ClientImpl::redirect(Request &req, Response &res, Error &error) {
   if (location.empty()) { return false; }
 
   thread_local const std::regex re(
-      R"((?:(https?):)?(?:
+      R"((?:(https?):)?(?://(?:\[([a-fA-F\d:]+)\]|([^:/?#]+))(?::(\d+))?)?([^?#]*)(\?.*)?)");
 
   std::smatch m;
   if (!std::regex_match(location, m, re)) { return false; }

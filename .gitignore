@@ -1,0 +1,12 @@
+*.o
+*.d
+text
+test
+server
+compiler_server
+oj_server/oj_server
+*.stdout
+*.stderr
+*.stdin
+*.compiler_error
+temp/
